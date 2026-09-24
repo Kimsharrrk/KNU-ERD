@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SW중심대학사업 관리 시스템 — ERD & 순서도</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --border: #2d3148;
+    --accent: #6c8ef5;
+    --accent2: #a78bfa;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --red: #f87171;
+    --text: #e2e8f0;
+    --text-muted: #8892b0;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, #1a1d27 0%, #0f1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 40px;
+  }
+  header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+  }
+  header p {
+    color: var(--text-muted);
+    font-size: 13px;
+  }
+  nav {
+    position: sticky;
+    top: 0;
+    background: rgba(15,17,23,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    z-index: 100;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  nav a {
+    display: inline-block;
+    padding: 14px 18px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+  }
+  nav a:hover, nav a.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  main { max-width: 1400px; margin: 0 auto; padding: 40px; }
+  section { margin-bottom: 64px; }
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .badge {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    background: var(--accent);
+    color: #fff;
+  }
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent2);
+    margin: 24px 0 12px;
+  }
+  .desc {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-bottom: 20px;
+    line-height: 1.8;
+  }
+  .diagram-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .diagram-box .mermaid {
+    min-width: 800px;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+  .info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .card .label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .card .value { font-size: 20px; font-weight: 700; color: var(--accent); }
+  .card .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+  .legend {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-pk { background: #facc15; }
+  .dot-fk { background: #60a5fa; }
+  .dot-uk { background: #4ade80; }
+  .dot-normal { background: #6b7280; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { background: var(--surface2); color: var(--text-muted); font-weight: 600; padding: 10px 12px; text-align: left; }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: rgba(108,142,245,0.04); }
+  .tag-pk { display: inline-block; padding: 1px 7px; border-radius: 4px; background: #facc1520; color: #facc15; font-size: 10px; font-weight: 700; }
+  .tag-fk { display: inline-block; padding: 1px 7px; border-radius: 4px; background: #60a5fa20; color: #60a5fa; font-size: 10px; font-weight: 700; }
+  .tag-uk { display: inline-block; padding: 1px 7px; border-radius: 4px; background: #4ade8020; color: #4ade80; font-size: 10px; font-weight: 700; }
+  .section-divider { border: none; border-top: 2px dashed var(--border); margin: 48px 0; }
+
+  /* 도메인 색상 뱃지 */
+  .badge-common  { background: #8b5cf6 !important; }
+  .badge-student { background: #eab308 !important; color: #000 !important; }
+  .badge-topcit  { background: #06b6d4 !important; color: #000 !important; }
+  .badge-mileage { background: #ec4899 !important; }
+  .badge-budget  { background: #22c55e !important; color: #000 !important; }
+  .badge-survey  { background: #f97316 !important; color: #000 !important; }
+
+  /* 섹션 헤더 왼쪽 컬러 바 */
+  .border-common  { border-left: 5px solid #8b5cf6 !important; padding-left: 14px; }
+  .border-student { border-left: 5px solid #eab308 !important; padding-left: 14px; }
+  .border-topcit  { border-left: 5px solid #06b6d4 !important; padding-left: 14px; }
+  .border-mileage { border-left: 5px solid #ec4899 !important; padding-left: 14px; }
+  .border-budget  { border-left: 5px solid #22c55e !important; padding-left: 14px; }
+  .border-survey  { border-left: 5px solid #f97316 !important; padding-left: 14px; }
+  .border-flow    { border-left: 5px solid #6c8ef5 !important; padding-left: 14px; }
+  .border-schema  { border-left: 5px solid #a78bfa !important; padding-left: 14px; }
+
+  /* 인트로 배너 */
+  .intro-banner {
+    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 60%, #1a1d27 100%);
+    border: 1px solid #3730a3;
+    border-radius: 14px;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .intro-banner h3 { color: #a5b4fc; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin: 0; }
+  .intro-banner p  { color: #cbd5e1; font-size: 14px; line-height: 1.8; margin: 0; }
+  .intro-banner .tag-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .intro-banner .tag {
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+
+  /* How-to 박스 */
+  .howto-box {
+    background: #0f172a;
+    border: 1px solid #1e3a5f;
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.9;
+  }
+  .howto-box strong { color: #e2e8f0; }
+
+  /* 테이블 소속 배지 */
+  .domain-dot {
+    display: inline-block;
+    width: 8px; height: 8px; border-radius: 50%;
+    margin-right: 4px; vertical-align: middle;
+  }
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SW중심대학사업 관리 시스템</h1>
+  <p style="color:#8892b0;font-size:13px;margin-top:4px;">Database Design Document &nbsp;|&nbsp; ERD &amp; 업무 순서도 v2.0 &nbsp;|&nbsp; 2026-09-24</p>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+    <span style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:5px 12px;font-size:12px;color:#94a3b8;">🏗️ 엔터티 28개</span>
+    <span style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:5px 12px;font-size:12px;color:#94a3b8;">📋 속성 212개</span>
+    <span style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:5px 12px;font-size:12px;color:#94a3b8;">🔗 관계(FK) 46개</span>
+    <span style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:5px 12px;font-size:12px;color:#94a3b8;">📊 업무도메인 6개</span>
+    <span style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:5px 12px;font-size:12px;color:#94a3b8;">📌 순서도 5개</span>
+  </div>
+</header>
+
+<nav id="nav">
+  <a href="#overview" class="active">개요</a>
+  <a href="#erd-full">전체 ERD</a>
+  <a href="#erd-common">공통/계정</a>
+  <a href="#erd-student">학생 관리</a>
+  <a href="#erd-topcit">TOPCIT</a>
+  <a href="#erd-mileage">마일리지</a>
+  <a href="#erd-budget">예산·지출</a>
+  <a href="#erd-survey">만족도</a>
+  <a href="#flow-login">순서도: 로그인</a>
+  <a href="#flow-student">순서도: 학생수정요청</a>
+  <a href="#flow-mileage">순서도: 마일리지신청</a>
+  <a href="#flow-budget">순서도: 지출승인</a>
+  <a href="#flow-survey">순서도: 설문응답</a>
+  <a href="#schema">스키마 목록</a>
+</nav>
+
+<main>
+
+<!-- ===== 개요 ===== -->
+<section id="overview">
+  <h2>📊 시스템 개요 <span class="badge">Overview</span></h2>
+  <div class="intro-banner">
+    <h3>📖 이 문서에 대해</h3>
+    <p>SW중심대학사업단 관리 시스템의 <strong>데이터베이스 설계 문서</strong>입니다.<br>
+    총 28개 엔터티(테이블), 212개 속성(컬럼), 46개 외래키(FK) 관계로 구성되며, 아래 6개의 업무 도메인으로 나뉩니다.</p>
+    <div class="tag-row">
+      <span class="tag" style="background:#8b5cf620;color:#c4b5fd;border:1px solid #8b5cf640;">🟪 공통/계정</span>
+      <span class="tag" style="background:#eab30820;color:#fde68a;border:1px solid #eab30840;">🟨 학생 관리</span>
+      <span class="tag" style="background:#06b6d420;color:#67e8f9;border:1px solid #06b6d440;">🟦 TOPCIT</span>
+      <span class="tag" style="background:#ec489920;color:#f9a8d4;border:1px solid #ec489940;">🟥 마일리지</span>
+      <span class="tag" style="background:#22c55e20;color:#86efac;border:1px solid #22c55e40;">🟩 예산·지출</span>
+      <span class="tag" style="background:#f9731620;color:#fdba74;border:1px solid #f9731640;">🟧 만족도</span>
+    </div>
+  </div>
+  <div class="howto-box">
+    💡 <strong>처음 보시는 팀원분께:</strong> 위 네비게이션 바에서 보고 싶은 섹션을 바로 클릭하세요.<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>전체 구조가 궁금하면</strong> → 🗺️ 전체 ERD<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>특정 업무 흐름이 궁금하면</strong> → 각 순서도(Flowchart)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;• <strong>테이블 목록 한눈에 보려면</strong> → 📄 스키마 목록
+  </div>
+  <div class="info-cards">
+    <div class="card"><div class="label">총 엔터티</div><div class="value">28</div><div class="sub">6개 업무 영역</div></div>
+    <div class="card"><div class="label">총 속성</div><div class="value">212</div><div class="sub">PK·FK·일반 포함</div></div>
+    <div class="card"><div class="label">외래키 (FK)</div><div class="value">46</div><div class="sub">테이블 간 참조</div></div>
+    <div class="card"><div class="label">기능 요구사항</div><div class="value">55</div><div class="sub">FR-STU/TOP/MIL/BUD/SAT</div></div>
+    <div class="card"><div class="label">데이터 요구사항</div><div class="value">32</div><div class="sub">DR-*</div></div>
+    <div class="card"><div class="label">설계 의사결정</div><div class="value">16</div><div class="sub">D-01 ~ D-16</div></div>
+  </div>
+
+  <div class="legend">
+    <span><div class="dot dot-pk"></div> PK (기본키)</span>
+    <span><div class="dot dot-fk"></div> FK (외래키)</span>
+    <span><div class="dot dot-uk"></div> UK (유일키)</span>
+    <span><div class="dot dot-normal"></div> 일반 속성</span>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+mindmap
+  root((SW사업관리 DB))
+    공통/계정
+      USER
+      ROLE
+      USER_ROLE
+      COMMON_CODE_GROUP
+      COMMON_CODE
+      CHANGE_LOG
+    학생관리
+      DEPARTMENT
+      STUDENT
+      ENROLLMENT_HISTORY
+      STUDENT_INFO_REQUEST
+    TOPCIT
+      TOPCIT_ROUND
+      TOPCIT_SCORE
+    마일리지
+      PROGRAM
+      MILEAGE_POLICY
+      MILEAGE_APPLY
+      ATTACH_FILE
+      MILEAGE_LEDGER
+    예산·지출
+      BUDGET_PROJECT
+      BUDGET_ITEM
+      PROJECT_BUDGET
+      PROFESSOR
+      EXPENSE
+      STUDENT_STIPEND
+      BUDGET_CHANGE_HIST
+    만족도
+      SURVEY
+      SURVEY_QUESTION
+      SURVEY_RESPONSE
+      SURVEY_ANSWER
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 전체 ERD ===== -->
+<section id="erd-full">
+  <h2>🗺️ 전체 ERD <span class="badge">Full ERD</span></h2>
+  <p class="desc">28개 엔터티의 전체 관계도. 핵심 FK 연결만 표시합니다.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+erDiagram
+    USER ||--o{ USER_ROLE : "역할 부여"
+    ROLE ||--o{ USER_ROLE : "역할 보유"
+    USER ||--o{ STUDENT : "1:1 계정"
+    DEPARTMENT ||--o{ STUDENT : "소속"
+    DEPARTMENT ||--o{ PROFESSOR : "소속"
+    STUDENT ||--o{ ENROLLMENT_HISTORY : "학적 이력"
+    STUDENT ||--o{ STUDENT_INFO_REQUEST : "수정 요청"
+    STUDENT ||--o{ TOPCIT_SCORE : "점수 보유"
+    TOPCIT_ROUND ||--o{ TOPCIT_SCORE : "회차 점수"
+    PROGRAM ||--o{ MILEAGE_POLICY : "적립 정책"
+    PROGRAM ||--o{ SURVEY : "만족도 조사"
+    STUDENT ||--o{ MILEAGE_APPLY : "신청"
+    MILEAGE_POLICY ||--o{ MILEAGE_APPLY : "정책 기준"
+    MILEAGE_APPLY ||--o{ ATTACH_FILE : "증빙 첨부"
+    MILEAGE_APPLY ||--o{ MILEAGE_LEDGER : "적립 원장"
+    STUDENT ||--o{ MILEAGE_LEDGER : "누적 관리"
+    BUDGET_PROJECT ||--o{ PROJECT_BUDGET : "사업 예산"
+    BUDGET_ITEM ||--o{ PROJECT_BUDGET : "항목별"
+    PROJECT_BUDGET ||--o{ EXPENSE : "지출"
+    PROJECT_BUDGET ||--o{ BUDGET_CHANGE_HIST : "변경 이력"
+    PROFESSOR ||--o{ EXPENSE : "지출 책임"
+    EXPENSE ||--o{ STUDENT_STIPEND : "학생 인건비"
+    STUDENT ||--o{ STUDENT_STIPEND : "지급 대상"
+    SURVEY ||--o{ SURVEY_QUESTION : "문항"
+    SURVEY ||--o{ SURVEY_RESPONSE : "응답 참여"
+    STUDENT ||--o{ SURVEY_RESPONSE : "응답 제출"
+    SURVEY_RESPONSE ||--o{ SURVEY_ANSWER : "답변 상세"
+    SURVEY_QUESTION ||--o{ SURVEY_ANSWER : "문항별 답"
+    COMMON_CODE_GROUP ||--o{ COMMON_CODE : "코드값"
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 01 공통/계정 ERD ===== -->
+<section id="erd-common">
+  <h2 class="border-common">🔐 공통·계정 ERD <span class="badge badge-common">01 Common</span></h2>
+  <p class="desc" style="border-left:3px solid #8b5cf6;padding-left:10px;">사용자 인증, 역할 관리, 공통 코드, 변경 감사 로그 영역입니다. <strong>USER</strong>는 모든 행위의 기준이 됩니다.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+erDiagram
+    USER {
+        int user_id PK
+        varchar login_id UK
+        varchar password_hash
+        varchar user_name
+        varchar user_type
+        varchar is_active
+        TIMESTAMP password_changed_at
+        TIMESTAMP created_at
+        TIMESTAMP last_login_at
+    }
+    ROLE {
+        int role_id PK
+        varchar role_code UK
+        varchar role_name
+        varchar description
+        varchar is_use
+    }
+    USER_ROLE {
+        int user_role_id PK
+        int user_id FK
+        int role_id FK
+        TIMESTAMP granted_at
+        int granted_by FK
+    }
+    COMMON_CODE_GROUP {
+        varchar group_code PK
+        varchar group_name
+        varchar description
+        varchar is_use
+    }
+    COMMON_CODE {
+        varchar group_code PK
+        varchar code PK
+        varchar code_name
+        int sort_order
+        varchar is_use
+    }
+    CHANGE_LOG {
+        int log_id PK
+        varchar target_entity
+        varchar target_id
+        varchar action_type
+        text before_data
+        text after_data
+        int created_by FK
+        TIMESTAMP created_at
+        varchar reason
+    }
+
+    USER ||--o{ USER_ROLE : "1:N"
+    ROLE ||--o{ USER_ROLE : "1:N"
+    COMMON_CODE_GROUP ||--o{ COMMON_CODE : "1:N"
+    USER ||--o{ CHANGE_LOG : "처리자"
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 02 학생 관리 ERD ===== -->
+<section id="erd-student">
+  <h2 class="border-student">🎓 학생 관리 ERD <span class="badge badge-student">02 Student</span></h2>
+  <p class="desc" style="border-left:3px solid #eab308;padding-left:10px;">학생 기본정보, 학적 변동 이력, 인적사항 수정 요청 관리 영역. 승인 전 원본 데이터는 변경되지 않습니다.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+erDiagram
+    DEPARTMENT {
+        int dept_id PK
+        varchar dept_code UK
+        varchar dept_name
+        varchar college
+        varchar campus
+        varchar is_use
+    }
+    USER {
+        int user_id PK
+        varchar login_id UK
+        varchar user_name
+        varchar user_type
+    }
+    STUDENT {
+        int student_id PK
+        int user_id FK
+        varchar student_no UK
+        int dept_id FK
+        varchar track_code
+        int grade
+        varchar academic_status
+        varchar admission_type
+        DATE admission_date
+        varchar phone
+        varchar sms_agree_yn
+        varchar email
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    ENROLLMENT_HISTORY {
+        int enroll_hist_id PK
+        int student_id FK
+        varchar change_type
+        varchar before_status
+        varchar after_status
+        DATE change_date
+        int created_by FK
+        TIMESTAMP created_at
+    }
+    STUDENT_INFO_REQUEST {
+        int request_id PK
+        int student_id FK
+        varchar request_field
+        varchar before_val
+        varchar after_val
+        TIMESTAMP request_dt
+        varchar status
+        int approver_id FK
+        TIMESTAMP process_dt
+        varchar process_comment
+    }
+
+    USER ||--|| STUDENT : "1:1 계정"
+    DEPARTMENT ||--o{ STUDENT : "1:N 소속"
+    STUDENT ||--o{ ENROLLMENT_HISTORY : "1:N 이력"
+    STUDENT ||--o{ STUDENT_INFO_REQUEST : "1:N 요청"
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 03 TOPCIT ERD ===== -->
+<section id="erd-topcit">
+  <h2 class="border-topcit">📝 TOPCIT ERD <span class="badge badge-topcit">03 TOPCIT</span></h2>
+  <p class="desc" style="border-left:3px solid #06b6d4;padding-left:10px;">TOPCIT 시험 회차별 학생 점수 관리. 동일 학생의 동일 회차 중복 등록 불가 (UNIQUE 제약).</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+erDiagram
+    TOPCIT_ROUND {
+        int round_id PK
+        varchar round_name
+        DATE exam_date
+        int max_score
+        varchar description
+        varchar status
+    }
+    TOPCIT_SCORE {
+        int score_id PK
+        int student_id FK
+        int round_id FK
+        int total_score
+        varchar remark
+        int created_by FK
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    STUDENT {
+        int student_id PK
+        varchar student_no UK
+        varchar user_name
+    }
+
+    STUDENT ||--o{ TOPCIT_SCORE : "1:N 점수"
+    TOPCIT_ROUND ||--o{ TOPCIT_SCORE : "1:N 회차별"
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 04 마일리지 ERD ===== -->
+<section id="erd-mileage">
+  <h2 class="border-mileage">⭐ 마일리지 ERD <span class="badge badge-mileage">04 Mileage</span></h2>
+  <p class="desc" style="border-left:3px solid #ec4899;padding-left:10px;">프로그램 참여·입상에 따른 마일리지 적립/승인/원장 관리. 누적 마일리지는 저장하지 않고 원장 합산으로 산출합니다.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+erDiagram
+    PROGRAM {
+        int program_id PK
+        varchar prog_category
+        varchar prog_name
+        DATE prog_date
+        varchar organizer
+        varchar status
+        int created_by FK
+        TIMESTAMP created_at
+    }
+    MILEAGE_POLICY {
+        int policy_id PK
+        int program_id FK
+        varchar participate_type
+        int points
+        varchar description
+        varchar is_use
+    }
+    MILEAGE_APPLY {
+        int apply_id PK
+        int student_id FK
+        int policy_id FK
+        int apply_points
+        int confirmed_points
+        varchar status
+        int approver_id FK
+        TIMESTAMP apply_dt
+        TIMESTAMP approve_dt
+        varchar process_comment
+    }
+    ATTACH_FILE {
+        int file_id PK
+        int apply_id FK
+        varchar file_name
+        varchar file_path
+        int file_size
+        int uploaded_by FK
+        TIMESTAMP upload_dt
+    }
+    MILEAGE_LEDGER {
+        int ledger_id PK
+        int student_id FK
+        int apply_id FK
+        varchar trans_type
+        int points
+        TIMESTAMP trans_dt
+        int created_by FK
+        varchar reason
+    }
+
+    PROGRAM ||--o{ MILEAGE_POLICY : "1:N 정책"
+    MILEAGE_POLICY ||--o{ MILEAGE_APPLY : "1:N 신청"
+    MILEAGE_APPLY ||--o{ ATTACH_FILE : "1:N 증빙"
+    MILEAGE_APPLY ||--o{ MILEAGE_LEDGER : "1:N 원장"
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 05 예산·지출 ERD ===== -->
+<section id="erd-budget">
+  <h2 class="border-budget">💰 예산·지출 ERD <span class="badge badge-budget">05 Budget</span></h2>
+  <p class="desc" style="border-left:3px solid #22c55e;padding-left:10px;">사업별 7개 예산항목 한도 관리, 지출 승인, 학생인건비 상세, 예산 변경 이력 관리.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+erDiagram
+    BUDGET_PROJECT {
+        int project_id PK
+        int fiscal_year
+        int project_round
+        varchar project_name
+        DATE start_date
+        DATE end_date
+        varchar status
+    }
+    BUDGET_ITEM {
+        int item_id PK
+        varchar item_code UK
+        varchar item_name
+        int sort_order
+        varchar is_use
+    }
+    PROJECT_BUDGET {
+        int project_budget_id PK
+        int project_id FK
+        int item_id FK
+        int allocated_amount
+        int expense_limit
+        varchar status
+        int created_by FK
+        TIMESTAMP created_at
+        int confirmed_by FK
+        TIMESTAMP confirmed_at
+    }
+    PROFESSOR {
+        int professor_id PK
+        varchar prof_no UK
+        varchar prof_name
+        int dept_id FK
+        varchar is_active
+    }
+    EXPENSE {
+        int expense_id PK
+        int project_budget_id FK
+        int professor_id FK
+        varchar expense_entity
+        DATE expense_date
+        int amount
+        varchar description
+        varchar status
+        int created_by FK
+        TIMESTAMP created_at
+        int approver_id FK
+        TIMESTAMP approve_dt
+        varchar process_comment
+    }
+    STUDENT_STIPEND {
+        int stipend_id PK
+        int expense_id FK
+        int student_id FK
+        varchar payment_month
+        int amount
+        int tax_deducted
+        varchar status
+    }
+    BUDGET_CHANGE_HIST {
+        int budget_hist_id PK
+        int project_budget_id FK
+        varchar change_type
+        int before_amount
+        int after_amount
+        varchar change_reason
+        int changed_by FK
+        TIMESTAMP changed_at
+    }
+
+    BUDGET_PROJECT ||--o{ PROJECT_BUDGET : "1:N 항목별"
+    BUDGET_ITEM ||--o{ PROJECT_BUDGET : "1:N 사업별"
+    PROJECT_BUDGET ||--o{ EXPENSE : "1:N 지출"
+    PROJECT_BUDGET ||--o{ BUDGET_CHANGE_HIST : "1:N 변경이력"
+    PROFESSOR ||--o{ EXPENSE : "1:N 지출책임"
+    EXPENSE ||--o{ STUDENT_STIPEND : "1:N 인건비"
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 06 만족도 ERD ===== -->
+<section id="erd-survey">
+  <h2 class="border-survey">📋 만족도 ERD <span class="badge badge-survey">06 Survey</span></h2>
+  <p class="desc" style="border-left:3px solid #f97316;padding-left:10px;">프로그램 만족도 조사 → 문항 → 응답(헤더) → 답변 상세의 4-테이블 구조. 학생 1회 응답 제한.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+erDiagram
+    PROGRAM {
+        int program_id PK
+        varchar prog_name
+        DATE prog_date
+    }
+    SURVEY {
+        int survey_id PK
+        int program_id FK
+        varchar title
+        DATE start_date
+        DATE end_date
+        varchar status
+        varchar dup_allow_yn
+        int created_by FK
+    }
+    SURVEY_QUESTION {
+        int question_id PK
+        int survey_id FK
+        int question_no
+        varchar question_text
+        varchar question_type
+        int scale_min
+        int scale_max
+        varchar required_yn
+    }
+    SURVEY_RESPONSE {
+        int response_id PK
+        int survey_id FK
+        int student_id FK
+        TIMESTAMP submitted_at
+        varchar is_complete
+        TIMESTAMP completed_at
+    }
+    SURVEY_ANSWER {
+        int answer_id PK
+        int response_id FK
+        int question_id FK
+        int score
+        varchar subjective_opinion
+    }
+
+    PROGRAM ||--o{ SURVEY : "1:N 조사"
+    SURVEY ||--o{ SURVEY_QUESTION : "1:N 문항"
+    SURVEY ||--o{ SURVEY_RESPONSE : "1:N 응답"
+    SURVEY_RESPONSE ||--o{ SURVEY_ANSWER : "1:N 답변"
+    SURVEY_QUESTION ||--o{ SURVEY_ANSWER : "1:N 답변"
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 순서도: 로그인 ===== -->
+<section id="flow-login">
+  <h2 class="border-flow">🔑 순서도: 로그인 &amp; 인증 <span class="badge">Flowchart 01</span></h2>
+  <p class="desc">사용자가 시스템에 로그인하는 전체 흐름. 비밀번호 해시 검증 → 역할 조회 → 세션 발급.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart TD
+    A([🚀 시작: 로그인 화면]) --> B[login_id / 비밀번호 입력]
+    B --> C{입력값\n유효성 체크}
+    C -->|빈값/형식 오류| D[❌ 입력 오류 메시지]
+    D --> B
+    C -->|정상| E[(USER 테이블\n로그인ID 조회)]
+    E --> F{사용자 존재?\nis_active = Y?}
+    F -->|없음/비활성| G[❌ 계정 없음 오류\n5회 실패 잠금]
+    F -->|존재| H{비밀번호 해시\n일치 여부}
+    H -->|불일치| I[❌ 비밀번호 오류\n실패 횟수 +1]
+    I --> J{5회 초과?}
+    J -->|Yes| K[계정 잠금\nlast_login_at 기록 안함]
+    J -->|No| B
+    H -->|일치| L[(USER_ROLE 테이블\n역할 조회)]
+    L --> M[last_login_at 갱신]
+    M --> N{user_type\n판별}
+    N -->|학생| O[🎓 학생 대시보드]
+    N -->|마스터관리자| P[⚙️ 관리자 대시보드]
+    N -->|일반관리자| Q[📋 제한된 관리 화면]
+    O & P & Q --> R([✅ 세션 시작])
+
+    style A fill:#6c8ef5,color:#fff
+    style R fill:#4ade80,color:#000
+    style D fill:#f87171,color:#fff
+    style G fill:#f87171,color:#fff
+    style I fill:#f87171,color:#fff
+    style K fill:#f87171,color:#fff
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 순서도: 학생 인적사항 수정 요청 ===== -->
+<section id="flow-student">
+  <h2 class="border-flow">📝 순서도: 학생 인적사항 수정 요청 <span class="badge">Flowchart 02</span></h2>
+  <p class="desc">학생이 인적사항 변경을 요청하고 관리자가 승인/반려하는 흐름. 승인 전 원본 데이터 미변경 원칙.</p>
+  <div class="grid-2">
+    <div class="diagram-box">
+      <h3>① 학생: 수정 요청 등록</h3>
+      <div class="mermaid">
+flowchart TD
+    A([🎓 학생 로그인]) --> B[인적사항 조회\nSTUDENT 테이블]
+    B --> C[변경 항목 선택\n변경값 입력]
+    C --> D{변경값\n유효성 검증}
+    D -->|오류| E[❌ 입력값 오류]
+    E --> C
+    D -->|정상| F[(STUDENT_INFO_REQUEST\n신청 INSERT)]
+    F --> G[status = 대기]
+    G --> H[✅ 요청 완료\n처리결과 대기]
+
+    style A fill:#6c8ef5,color:#fff
+    style H fill:#4ade80,color:#000
+    style E fill:#f87171,color:#fff
+      </div>
+    </div>
+    <div class="diagram-box">
+      <h3>② 관리자: 승인/반려 처리</h3>
+      <div class="mermaid">
+flowchart TD
+    A([⚙️ 관리자 로그인]) --> B[수정요청 목록 조회\nstatus = 대기]
+    B --> C[요청 상세 검토]
+    C --> D{승인 여부}
+    D -->|반려| E[처리의견 입력]
+    E --> F[(status = 반려\nprocess_comment 저장)]
+    F --> G[학생 알림]
+    D -->|승인| H{충돌 검사\n동시 승인 여부}
+    H -->|충돌| I[❌ 충돌 오류\n재검토 요청]
+    H -->|정상| J[(STUDENT 테이블\n해당 컬럼 UPDATE)]
+    J --> K[(status = 승인\napprover_id / process_dt 기록)]
+    K --> L[(CHANGE_LOG\nINSERT)]
+    L --> M[학생 알림]
+    G & M --> N([✅ 처리 완료])
+
+    style A fill:#a78bfa,color:#fff
+    style N fill:#4ade80,color:#000
+    style I fill:#f87171,color:#fff
+    style F fill:#facc15,color:#000
+    style K fill:#4ade80,color:#000
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 순서도: 마일리지 신청 ===== -->
+<section id="flow-mileage">
+  <h2 class="border-flow">⭐ 순서도: 마일리지 적립 신청 <span class="badge">Flowchart 03</span></h2>
+  <p class="desc">학생의 마일리지 신청 → 증빙 첨부 → 관리자 심사 → 적립 원장 기록 전체 흐름.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart TD
+    A([🎓 학생]) --> B[참여 프로그램 선택\nPROGRAM 조회]
+    B --> C[참여구분 선택\n참여/입상]
+    C --> D[(MILEAGE_POLICY 조회\n해당 프로그램 정책)]
+    D --> E{정책 존재?}
+    E -->|없음| F[❌ 해당 정책 없음]
+    E -->|있음| G[신청 포인트 확인]
+    G --> H{중복 신청\n검사}
+    H -->|중복| I[❌ 이미 신청됨]
+    H -->|신규| J[(MILEAGE_APPLY INSERT\nstatus = 대기)]
+    J --> K[증빙파일 첨부\nATTACH_FILE INSERT]
+    K --> L[✅ 신청 완료]
+
+    L --> M([⚙️ 관리자])
+    M --> N[신청 목록 조회\nstatus = 대기]
+    N --> O[증빙자료 검토]
+    O --> P{승인 여부}
+    P -->|반려| Q[처리의견 기록\nstatus = 반려]
+    Q --> R[학생 알림]
+    P -->|승인| S[(MILEAGE_APPLY\nstatus = 승인\nconfirmed_points 확정)]
+    S --> T[(MILEAGE_LEDGER INSERT\ntrans_type = 적립\npoints = confirmed_points)]
+    T --> U[누적 마일리지 산출\nLEDGER 합산]
+    U --> V[학생 알림]
+    R & V --> W([✅ 처리 완료])
+
+    style A fill:#6c8ef5,color:#fff
+    style M fill:#a78bfa,color:#fff
+    style W fill:#4ade80,color:#000
+    style F fill:#f87171,color:#fff
+    style I fill:#f87171,color:#fff
+    style Q fill:#facc15,color:#000
+    style T fill:#4ade80,color:#000
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 순서도: 예산 지출 승인 ===== -->
+<section id="flow-budget">
+  <h2 class="border-flow">💰 순서도: 예산 지출 승인 <span class="badge">Flowchart 04</span></h2>
+  <p class="desc">지출 내역 등록 → 한도 초과 검증 → 승인/반려 → 학생인건비 상세 분리 처리.</p>
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart TD
+    A([⚙️ 관리자: 지출 입력]) --> B[사업 · 예산항목 선택\nPROJECT_BUDGET 조회]
+    B --> C[지출일자 · 지출교수 · 금액 입력]
+    C --> D[(한도 초과 검증\nexpense_limit - 기승인합계)]
+    D --> E{한도 초과?}
+    E -->|초과| F[❌ 한도 초과 오류\n입력 불가]
+    E -->|정상| G[(EXPENSE INSERT\nstatus = 대기)]
+    G --> H{학생인건비\n항목인가?}
+    H -->|Yes| I[학생별 지급 상세 입력]
+    I --> J[(STUDENT_STIPEND INSERT\nstatus = 대기)]
+    J --> K{상세 합계\n≤ 지출금액?}
+    K -->|초과| L[❌ 상세 합계 오류]
+    K -->|정상| M[승인 요청]
+    H -->|No| M
+    M --> N[지출 내역 검토]
+    N --> O{승인 여부}
+    O -->|반려| P[(status = 반려\nprocess_comment 기록)]
+    O -->|승인| Q[(EXPENSE status = 승인\napprover_id / approve_dt)]
+    Q --> R{학생인건비?}
+    R -->|Yes| S[(STUDENT_STIPEND\nstatus = 지급확정)]
+    R -->|No| T[집계 갱신]
+    S --> T
+    T --> U[(CHANGE_LOG INSERT)]
+    P --> V[알림]
+    U --> V
+    V --> W([✅ 처리 완료])
+
+    style A fill:#a78bfa,color:#fff
+    style W fill:#4ade80,color:#000
+    style F fill:#f87171,color:#fff
+    style L fill:#f87171,color:#fff
+    style P fill:#facc15,color:#000
+    style Q fill:#4ade80,color:#000
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 순서도: 설문 응답 ===== -->
+<section id="flow-survey">
+  <h2 class="border-flow">📋 순서도: 만족도 조사 응답 <span class="badge">Flowchart 05</span></h2>
+  <p class="desc">관리자의 조사 생성 → 학생의 문항별 응답 제출 → 집계 처리 전체 흐름.</p>
+  <div class="grid-2">
+    <div class="diagram-box">
+      <h3>① 관리자: 조사 생성</h3>
+      <div class="mermaid">
+flowchart TD
+    A([⚙️ 관리자]) --> B[프로그램 선택\nPROGRAM 조회]
+    B --> C[조사명 · 기간 입력]
+    C --> D[(SURVEY INSERT\nstatus = 초안)]
+    D --> E[문항 추가 루프]
+    E --> F[문항내용 · 유형 · 척도 입력]
+    F --> G[(SURVEY_QUESTION INSERT)]
+    G --> H{문항 추가?}
+    H -->|Yes| E
+    H -->|No| I[(SURVEY status = 공개)]
+    I --> J([✅ 조사 공개 완료])
+
+    style A fill:#a78bfa,color:#fff
+    style J fill:#4ade80,color:#000
+      </div>
+    </div>
+    <div class="diagram-box">
+      <h3>② 학생: 응답 제출</h3>
+      <div class="mermaid">
+flowchart TD
+    A([🎓 학생]) --> B[공개 조사 목록 조회\nstatus = 공개]
+    B --> C[조사 선택]
+    C --> D{이미 응답했나?\nSURVEY_RESPONSE 조회}
+    D -->|중복| E[❌ 이미 응답 완료]
+    D -->|신규| F[(SURVEY_RESPONSE INSERT\nis_complete = N)]
+    F --> G[문항 순서대로 표시]
+    G --> H[점수 또는 의견 입력]
+    H --> I{점수 범위\n척도 검증}
+    I -->|범위 초과| J[❌ 유효하지 않은 점수]
+    J --> H
+    I -->|정상| K[(SURVEY_ANSWER INSERT)]
+    K --> L{다음 문항?}
+    L -->|Yes| G
+    L -->|No| M[(SURVEY_RESPONSE\nis_complete = Y\ncompleted_at 기록)]
+    M --> N([✅ 응답 완료])
+
+    style A fill:#6c8ef5,color:#fff
+    style N fill:#4ade80,color:#000
+    style E fill:#f87171,color:#fff
+    style J fill:#f87171,color:#fff
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ===== 스키마 목록 ===== -->
+<section id="schema">
+  <h2 class="border-schema">📄 전체 스키마 목록 <span class="badge">Schema Reference</span></h2>
+  <p class="desc">28개 엔터티의 물리명·논리명·주요 속성 요약 테이블.</p>
+
+  <h3 style="color:#a78bfa;border-bottom:1px solid #8b5cf630;padding-bottom:6px;">🟪 01 공통·계정</h3>
+  <div class="diagram-box" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>물리명</th><th>논리명</th><th>PK</th><th>FK 참조</th><th>주요 속성</th></tr></thead>
+      <tbody>
+        <tr><td>USER</td><td>사용자</td><td>user_id</td><td>—</td><td>login_id(UK), password_hash, user_type, is_active</td></tr>
+        <tr><td>ROLE</td><td>역할</td><td>role_id</td><td>—</td><td>role_code(UK), role_name, is_use</td></tr>
+        <tr><td>USER_ROLE</td><td>사용자역할매핑</td><td>user_role_id</td><td>USER, ROLE</td><td>granted_at, granted_by</td></tr>
+        <tr><td>COMMON_CODE_GROUP</td><td>공통코드그룹</td><td>group_code</td><td>—</td><td>group_name, is_use</td></tr>
+        <tr><td>COMMON_CODE</td><td>공통코드</td><td>group_code + code</td><td>COMMON_CODE_GROUP</td><td>code_name, sort_order, is_use</td></tr>
+        <tr><td>CHANGE_LOG</td><td>변경감사로그</td><td>log_id</td><td>USER</td><td>target_entity, target_id, action_type, before/after_data</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="color:#fde68a;border-bottom:1px solid #eab30830;padding-bottom:6px;">🟨 02 학생 관리</h3>
+  <div class="diagram-box" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>물리명</th><th>논리명</th><th>PK</th><th>FK 참조</th><th>주요 속성</th></tr></thead>
+      <tbody>
+        <tr><td>DEPARTMENT</td><td>학과</td><td>dept_id</td><td>—</td><td>dept_code(UK), dept_name, college, campus</td></tr>
+        <tr><td>STUDENT</td><td>학생</td><td>student_id</td><td>USER, DEPARTMENT</td><td>student_no(UK), grade, academic_status, phone, email</td></tr>
+        <tr><td>ENROLLMENT_HISTORY</td><td>학적변동이력</td><td>enroll_hist_id</td><td>STUDENT, USER</td><td>change_type, before/after_status, change_date</td></tr>
+        <tr><td>STUDENT_INFO_REQUEST</td><td>학생정보수정요청</td><td>request_id</td><td>STUDENT, USER</td><td>request_field, before/after_val, status, process_comment</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="color:#67e8f9;border-bottom:1px solid #06b6d430;padding-bottom:6px;">🟦 03 TOPCIT</h3>
+  <div class="diagram-box" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>물리명</th><th>논리명</th><th>PK</th><th>FK 참조</th><th>주요 속성</th></tr></thead>
+      <tbody>
+        <tr><td>TOPCIT_ROUND</td><td>TOPCIT회차</td><td>round_id</td><td>—</td><td>round_name, exam_date, max_score(=1000)</td></tr>
+        <tr><td>TOPCIT_SCORE</td><td>TOPCIT점수</td><td>score_id</td><td>STUDENT, TOPCIT_ROUND</td><td>total_score(0~1000), remark [UK: student+round]</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="color:#f9a8d4;border-bottom:1px solid #ec489930;padding-bottom:6px;">🟥 04 마일리지</h3>
+  <div class="diagram-box" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>물리명</th><th>논리명</th><th>PK</th><th>FK 참조</th><th>주요 속성</th></tr></thead>
+      <tbody>
+        <tr><td>PROGRAM</td><td>프로그램</td><td>program_id</td><td>USER</td><td>prog_category, prog_name, prog_date, organizer</td></tr>
+        <tr><td>MILEAGE_POLICY</td><td>마일리지정책</td><td>policy_id</td><td>PROGRAM</td><td>participate_type, points, is_use</td></tr>
+        <tr><td>MILEAGE_APPLY</td><td>마일리지신청</td><td>apply_id</td><td>STUDENT, MILEAGE_POLICY, USER</td><td>apply_points, confirmed_points, status, process_comment</td></tr>
+        <tr><td>ATTACH_FILE</td><td>증빙첨부파일</td><td>file_id</td><td>MILEAGE_APPLY, USER</td><td>file_name, file_path, file_size</td></tr>
+        <tr><td>MILEAGE_LEDGER</td><td>마일리지적립원장</td><td>ledger_id</td><td>STUDENT, MILEAGE_APPLY, USER</td><td>trans_type(적립/회수), points, reason</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="color:#86efac;border-bottom:1px solid #22c55e30;padding-bottom:6px;">🟩 05 예산·지출</h3>
+  <div class="diagram-box" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>물리명</th><th>논리명</th><th>PK</th><th>FK 참조</th><th>주요 속성</th></tr></thead>
+      <tbody>
+        <tr><td>BUDGET_PROJECT</td><td>사업</td><td>project_id</td><td>—</td><td>fiscal_year, project_round, project_name, status</td></tr>
+        <tr><td>BUDGET_ITEM</td><td>예산항목</td><td>item_id</td><td>—</td><td>item_code(UK), item_name (7개 고정)</td></tr>
+        <tr><td>PROJECT_BUDGET</td><td>사업예산한도</td><td>project_budget_id</td><td>BUDGET_PROJECT, BUDGET_ITEM, USER</td><td>allocated_amount, expense_limit, status [UK: project+item]</td></tr>
+        <tr><td>PROFESSOR</td><td>교수</td><td>professor_id</td><td>DEPARTMENT</td><td>prof_no(UK), prof_name, is_active</td></tr>
+        <tr><td>EXPENSE</td><td>지출내역</td><td>expense_id</td><td>PROJECT_BUDGET, PROFESSOR, USER(x2)</td><td>expense_entity, amount, status, process_comment</td></tr>
+        <tr><td>STUDENT_STIPEND</td><td>학생인건비상세</td><td>stipend_id</td><td>EXPENSE, STUDENT</td><td>payment_month, amount, tax_deducted, status</td></tr>
+        <tr><td>BUDGET_CHANGE_HIST</td><td>예산변경이력</td><td>budget_hist_id</td><td>PROJECT_BUDGET, USER</td><td>change_type, before/after_amount, change_reason</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="color:#fdba74;border-bottom:1px solid #f9731630;padding-bottom:6px;">🟧 06 만족도</h3>
+  <div class="diagram-box" style="overflow-x:auto">
+    <table>
+      <thead><tr><th>물리명</th><th>논리명</th><th>PK</th><th>FK 참조</th><th>주요 속성</th></tr></thead>
+      <tbody>
+        <tr><td>SURVEY</td><td>만족도조사</td><td>survey_id</td><td>PROGRAM, USER</td><td>title, start/end_date, status, dup_allow_yn</td></tr>
+        <tr><td>SURVEY_QUESTION</td><td>설문문항</td><td>question_id</td><td>SURVEY</td><td>question_no, question_text, question_type, scale_min/max, required_yn</td></tr>
+        <tr><td>SURVEY_RESPONSE</td><td>설문응답</td><td>response_id</td><td>SURVEY, STUDENT</td><td>submitted_at, is_complete, completed_at [UK: survey+student]</td></tr>
+        <tr><td>SURVEY_ANSWER</td><td>설문답변상세</td><td>answer_id</td><td>SURVEY_RESPONSE, SURVEY_QUESTION</td><td>score, subjective_opinion [UK: response+question]</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+
+<footer style="text-align:center;padding:40px 32px;color:var(--text-muted);font-size:12px;border-top:1px solid var(--border);margin-top:48px;background:linear-gradient(0deg,#0a0d14,#0f1117);">
+  <div style="margin-bottom:12px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+    <span style="color:#8b5cf6;">🟪 공통/계정</span>
+    <span style="color:#eab308;">🟨 학생 관리</span>
+    <span style="color:#06b6d4;">🟦 TOPCIT</span>
+    <span style="color:#ec4899;">🟥 마일리지</span>
+    <span style="color:#22c55e;">🟩 예산·지출</span>
+    <span style="color:#f97316;">🟧 만족도</span>
+  </div>
+  SW중심대학사업 관리 시스템 — Database Design Document v2.0 &nbsp;|&nbsp; 2026-09-24<br>
+  <span style="color:#4a5568;margin-top:6px;display:block;">엔터티 28 · 속성 212 · FK 46 · 도메인 6 · 순서도 5</span>
+</footer>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'dark',
+  themeVariables: {
+    darkMode: true,
+    background: '#1a1d27',
+    primaryColor: '#6c8ef5',
+    primaryTextColor: '#e2e8f0',
+    primaryBorderColor: '#2d3148',
+    lineColor: '#6c8ef5',
+    secondaryColor: '#22263a',
+    tertiaryColor: '#0f1117',
+    edgeLabelBackground: '#1a1d27',
+    fontFamily: 'Pretendard, Apple SD Gothic Neo, Noto Sans KR, sans-serif',
+    fontSize: '13px',
+    cScale0: '#8b5cf6', // 공통 (보라)
+    cScale1: '#eab308', // 학생 (노랑)
+    cScale2: '#06b6d4', // TOPCIT (하늘)
+    cScale3: '#ec4899', // 마일리지 (분홍)
+    cScale4: '#22c55e', // 예산 (초록)
+    cScale5: '#f97316', // 만족도 (주황)
+    cScaleLabel0: '#ffffff',
+    cScaleLabel1: '#000000',
+    cScaleLabel2: '#000000',
+    cScaleLabel3: '#ffffff',
+    cScaleLabel4: '#000000',
+    cScaleLabel5: '#000000'
+
+  },
+  er: {
+    diagramPadding: 20,
+    layoutDirection: 'TB',
+    minEntityWidth: 100,
+    minEntityHeight: 75,
+    entityPadding: 15
+  },
+  flowchart: {
+    curve: 'basis',
+    padding: 20,
+    nodeSpacing: 40,
+    rankSpacing: 60,
+    useMaxWidth: true
+  },
+  mindmap: {
+    padding: 16,
+    useMaxWidth: true
+  }
+});
+
+// 네비게이션 활성화
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav a');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+      if (active) {
+        active.classList.add('active');
+        active.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+      }
+    }
+  });
+}, { threshold: 0.3, rootMargin: '-80px 0px -50% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
